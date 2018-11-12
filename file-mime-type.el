@@ -30,11 +30,17 @@
 
 ;;; Code:
 
+(define-error 'file-mime-type-error "File(1) error")
+
 (defun file-mime-type (file)
   "Return FILE mime type."
   ;; file(1) doesn't fail in such case
+  (unless (file-exists-p file)
+    (signal 'file-missing
+            (list "Running file(1)" "No such file or directory" file)))
   (unless (file-readable-p file)
-    (error "%s: No such file or no read permission" file))
+    (signal 'file-error
+            (list "Running file(1)" "Permission denied" file)))
   (with-temp-buffer
     (let ((exit (call-process "file" nil t nil "--brief" "--mime-type" file)))
       ;; Remove the final newline if any
@@ -42,7 +48,8 @@
         (delete-char -1))
       (if (zerop exit)
           (buffer-string)
-        (error "file: %s: %s" file (buffer-string))))))
+        (signal 'file-mime-type-error
+                (list "Command failed" (buffer-string)))))))
 
 (provide 'file-mime-type)
 ;;; file-mime-type.el ends here

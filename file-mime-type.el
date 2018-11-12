@@ -32,11 +32,16 @@
 
 (define-error 'file-mime-type-error "File(1) error")
 
+;; `file-missing' is introduced in Emacs 26.1.
+(defconst file-mime-type-file-missing
+  (if (get 'file-missing 'error-conditions) 'file-missing 'file-error)
+  "The error symbol for the `file-missing' error.")
+
 (defun file-mime-type (file)
   "Return FILE mime type."
   ;; file(1) doesn't fail in such case
   (unless (file-exists-p file)
-    (signal 'file-missing
+    (signal file-mime-type-file-missing
             (list "Running file(1)" "No such file or directory" file)))
   (unless (file-readable-p file)
     (signal 'file-error

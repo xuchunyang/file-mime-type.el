@@ -5,4 +5,4 @@
   "Test `file-mime-type'."
   (should (string= (file-mime-type "file-mime-type.el") "text/x-lisp"))
   (should-error (file-mime-type "a file that does not exist")
-                :type 'file-missing))
+                :type file-mime-type-file-missing))

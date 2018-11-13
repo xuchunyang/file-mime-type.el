@@ -10,5 +10,8 @@
     ;;
     ;; (file-mime-type (expand-file-name "~/Pictures/org-mode-unicorn.svg"))
     ;; ;; => "image/svg+xml"
+    ;;
+    ;; (file-mime-type-batch '("README.md" "Makefile"))
+    ;; ;; => ("text/plain" "text/x-makefile")
 
 <!-- Commentary ends here-->

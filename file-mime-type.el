@@ -27,6 +27,9 @@
 ;;
 ;; (file-mime-type (expand-file-name "~/Pictures/org-mode-unicorn.svg"))
 ;; ;; => "image/svg+xml"
+;;
+;; (file-mime-type-batch '("README.md" "Makefile"))
+;; ;; => ("text/plain" "text/x-makefile")
 
 ;;; Code:
 
@@ -37,6 +40,7 @@
   (if (get 'file-missing 'error-conditions) 'file-missing 'file-error)
   "The error symbol for the `file-missing' error.")
 
+;;;###autoload
 (defun file-mime-type (file)
   "Return FILE mime type."
   ;; file(1) doesn't fail in such case
@@ -55,6 +59,11 @@
           (buffer-string)
         (signal 'file-mime-type-error
                 (list "Command failed" (buffer-string)))))))
+
+;;;###autoload
+(defun file-mime-type-batch (files)
+  "Return FILES's mime types as a list."
+  (apply #'process-lines "file" "--brief" "--mime-type" files))
 
 (provide 'file-mime-type)
 ;;; file-mime-type.el ends here
